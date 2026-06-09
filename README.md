@@ -2,7 +2,7 @@
 
 Local Job Radar is a local-first job discovery and tracking system for software roles involving C++, computer graphics, rendering, Unreal Engine, Vulkan, OpenGL, OpenXR, VR/XR, simulation, real-time 3D, game systems, and digital twins.
 
-The system runs on a Linux laptop four times per day, reads public job boards, normalizes and scores postings, stores every discovered job in SQLite, exports relevant jobs to Excel, generates a static website, and publishes updated results to GitHub Pages.
+The system runs only when launched manually. It reads public job boards, normalizes and scores postings, stores every discovered job in SQLite, exports relevant jobs to Excel, generates a static website, and can publish updated results to GitHub Pages.
 
 Live website: **https://lch9527.github.io/JobSearchSystem/**
 
@@ -13,7 +13,7 @@ Live website: **https://lch9527.github.io/JobSearchSystem/**
 - Rank jobs against a graphics, Unreal, VR/XR, simulation, and C++ background.
 - Preserve manually edited application status and notes.
 - Provide both an Excel review workflow and a searchable static website.
-- Run unattended with conservative request limits.
+- Run on demand with conservative request limits.
 - Keep private local data out of the public website and Git repository.
 
 ## Non-Goals
@@ -65,33 +65,28 @@ Public job boards
              GitHub Pages
 ```
 
-## Complete Scheduled Workflow
+## Complete Manual Workflow
 
-The user-level systemd timer activates at local time:
+Launch a search from the project directory:
 
-```text
-09:00
-12:00
-16:00
-20:00
+```bash
+scripts/run_and_publish.sh
 ```
 
-Each activation performs this sequence:
+Each manual launch performs this sequence:
 
-1. `systemd/job-radar.timer` starts `job-radar.service`.
-2. The service executes `scripts/run_and_publish.sh`.
-3. The wrapper runs `main.py` with the project virtual environment.
-4. `main.py` loads settings, sources, and keyword configuration.
-5. Existing Excel `Status` and `Notes` values are imported into SQLite.
-6. Every enabled source is queried sequentially with request limits and delays.
-7. Each posting is normalized, hashed, scored, and upserted into SQLite.
-8. One failed source is logged without stopping the remaining sources.
-9. The Excel workbook is backed up and regenerated.
-10. The public `docs/jobs.json` website feed is regenerated.
-11. `scripts/publish_website.sh` checks for unrelated tracked changes.
-12. If `docs/jobs.json` changed, it is committed and pushed to `main`.
-13. The GitHub Pages workflow deploys the `docs/` directory.
-14. The live website receives the updated results.
+1. The wrapper runs `main.py` with the project virtual environment.
+2. `main.py` loads settings, sources, and keyword configuration.
+3. Existing Excel `Status` and `Notes` values are imported into SQLite.
+4. Every enabled source is queried sequentially with request limits and delays.
+5. Each posting is normalized, hashed, scored, and upserted into SQLite.
+6. One failed source is logged without stopping the remaining sources.
+7. The Excel workbook is backed up and regenerated.
+8. The public `docs/jobs.json` website feed is regenerated.
+9. `scripts/publish_website.sh` checks for unrelated tracked changes.
+10. If `docs/jobs.json` changed, it is committed and pushed to `main`.
+11. The GitHub Pages workflow deploys the `docs/` directory.
+12. The live website receives the updated results.
 
 If no website data changed, no Git commit is created.
 
@@ -104,7 +99,7 @@ JobSearch/
 ├── README.md                      System design and operations guide
 ├── .env.example                   Optional local path overrides
 ├── config/
-│   ├── settings.yaml              Paths, thresholds, limits, schedule
+│   ├── settings.yaml              Paths, thresholds, and request limits
 │   ├── sources.yaml               Public job board definitions
 │   └── keywords.yaml              Matching weights and penalties
 ├── collectors/
@@ -128,11 +123,8 @@ JobSearch/
 │   ├── rate_limiter.py            Request delays and run limits
 │   └── text.py                    Text, HTML, and URL normalization
 ├── scripts/
-│   ├── run_and_publish.sh         Scheduled search/publish wrapper
+│   ├── run_and_publish.sh         Manual search/publish command
 │   └── publish_website.sh         Guarded Git commit and push
-├── systemd/
-│   ├── job-radar.service          User service template
-│   └── job-radar.timer            Four-times-daily schedule
 ├── docs/
 │   ├── index.html                 Static website
 │   ├── styles.css                 Responsive website styling
@@ -142,7 +134,7 @@ JobSearch/
 ├── .github/workflows/pages.yml    GitHub Pages deployment
 ├── tests/                         Unit and integration tests
 ├── data/                          Local database, Excel, and backups
-└── logs/                          Application and systemd logs
+└── logs/                          Application logs
 ```
 
 ## Data Model and Persistence
@@ -481,13 +473,13 @@ Live URL:
 https://lch9527.github.io/JobSearchSystem/
 ```
 
-## Automatic Git Publishing
+## Manual Git Publishing
 
 `scripts/publish_website.sh` publishes generated website data safely.
 
 Behavior:
 
-- sets `GIT_TERMINAL_PROMPT=0` so scheduled runs cannot hang for credentials;
+- sets `GIT_TERMINAL_PROMPT=0` so a manual run fails instead of hanging for credentials;
 - refuses to proceed when unrelated tracked changes are present;
 - stages only `docs/jobs.json`;
 - exits successfully without a commit when the file is unchanged;
@@ -495,47 +487,28 @@ Behavior:
 - pushes `main` with a 60-second timeout;
 - on initial push failure, runs `git pull --rebase origin main` and retries once.
 
-This safeguard prevents a scheduled run from accidentally committing active source-code edits.
+This safeguard prevents a manual search from accidentally committing active source-code edits.
 
 Untracked files do not block publication, and ignored local data remains uncommitted.
 
-## Scheduling with systemd
+## Manual Launch
 
-The project uses user-level systemd units, avoiding root-owned project files.
+If an earlier version installed the systemd timer, disable and remove it once:
 
-### Service
+```bash
+systemctl --user disable --now job-radar.timer
+rm -f ~/.config/systemd/user/job-radar.timer ~/.config/systemd/user/job-radar.service
+systemctl --user daemon-reload
+```
 
-`systemd/job-radar.service` runs:
+Launch a search manually:
 
-```text
+```bash
+cd /home/lch9527/Desktop/JobSearch
 scripts/run_and_publish.sh
 ```
 
-### Timer
-
-`systemd/job-radar.timer` contains four `OnCalendar` entries and `Persistent=true`.
-
-Install or update the units:
-
-```bash
-mkdir -p ~/.config/systemd/user
-cp systemd/job-radar.service systemd/job-radar.timer ~/.config/systemd/user/
-systemctl --user daemon-reload
-systemctl --user enable --now job-radar.timer
-```
-
-Verify scheduling:
-
-```bash
-systemctl --user list-timers job-radar.timer --all --no-pager
-systemctl --user status job-radar.timer --no-pager
-```
-
-Run immediately:
-
-```bash
-systemctl --user start job-radar.service
-```
+Nothing in the repository schedules this command. Run it whenever you want to search and publish updated results.
 
 ## Error Handling and Exit Codes
 
@@ -602,13 +575,6 @@ Application logs are written to:
 logs/job_radar.log
 ```
 
-The systemd unit also appends output to:
-
-```text
-logs/systemd.log
-logs/systemd_error.log
-```
-
 Each run records:
 
 - start and completion time;
@@ -623,8 +589,6 @@ Useful commands:
 
 ```bash
 tail -n 100 logs/job_radar.log
-journalctl --user -u job-radar.service -n 100 --no-pager
-systemctl --user status job-radar.service --no-pager
 ```
 
 ## Installation
@@ -697,10 +661,7 @@ Controls:
 - backup retention;
 - log path and level;
 - HTTP timeout and user agent;
-- request limits and delays;
-- schedule metadata.
-
-The actual run schedule is enforced by `systemd/job-radar.timer`. Keep timer and YAML schedule values aligned for accurate summary display.
+- request limits and delays.
 
 ### `config/sources.yaml`
 
@@ -747,7 +708,6 @@ Additional validation commands:
 .venv/bin/python -m compileall -q main.py collectors matching storage utils tests
 bash -n scripts/run_and_publish.sh scripts/publish_website.sh
 node --check docs/app.js
-systemd-analyze verify systemd/job-radar.service systemd/job-radar.timer
 ```
 
 ## Troubleshooting
@@ -782,9 +742,9 @@ Then inspect the Pages workflow:
 https://github.com/lch9527/JobSearchSystem/actions
 ```
 
-### Scheduled publishing reports unrelated changes
+### Publishing reports unrelated changes
 
-Commit, stash, or intentionally resolve tracked source-code edits. The publisher will not include them in an automated job-results commit.
+Commit, stash, or intentionally resolve tracked source-code edits. The publisher will not include them in a job-results commit.
 
 ### Source returns 403, 404, or 429
 
@@ -803,7 +763,7 @@ git remote -v
 git push
 ```
 
-The automated publisher cannot open an interactive credential prompt.
+The publishing script cannot open an interactive credential prompt.
 
 ## Security and Privacy
 
@@ -822,9 +782,8 @@ When changing source code:
 2. run the full test suite;
 3. run syntax and unit validation;
 4. commit and push the code;
-5. copy changed systemd units into `~/.config/systemd/user/` when applicable;
-6. run `systemctl --user daemon-reload`;
-7. verify the next timer and Pages workflow.
+5. manually run `scripts/run_and_publish.sh`;
+6. verify the Pages workflow.
 
 When adding a source:
 
@@ -832,8 +791,8 @@ When adding a source:
 2. add it disabled to `config/sources.yaml`;
 3. test it with a manual run;
 4. inspect score quality and request volume;
-5. enable it for scheduled runs;
-6. monitor logs after the first scheduled execution.
+5. enable it;
+6. monitor logs after the first manual execution.
 
 ## License and Data Notice
 

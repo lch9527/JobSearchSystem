@@ -34,6 +34,4 @@ rate_limit:
   max_requests_per_api_source_per_run: 50
   backoff_seconds: [60, 120, 300, 600]
 
-scheduler:
-  run_times: ["09:00", "12:00", "16:00", "20:00"]
 
