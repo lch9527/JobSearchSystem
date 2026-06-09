@@ -6,6 +6,11 @@ from collectors.base import Job
 from utils.text import normalize_text
 
 
+EXPORT_CONTROL_PHRASE = normalize_text(
+    "Must be a U.S. Person due to required access to U.S. export controlled information or facilities"
+)
+
+
 def _contains(text: str, keyword: str) -> bool:
     normalized_keyword = normalize_text(keyword)
     if not normalized_keyword:
@@ -17,6 +22,7 @@ def _contains(text: str, keyword: str) -> bool:
 def score_job(job: Job, keyword_config: dict) -> tuple[int, str]:
     title = normalize_text(job.title)
     description = normalize_text(job.description)
+    combined = f"{title} {description}"
     additions: list[str] = []
     penalties: list[str] = []
     score = 0.0
@@ -39,13 +45,18 @@ def score_job(job: Job, keyword_config: dict) -> tuple[int, str]:
             score += weight
             additions.append(f'"{keyword}" +{weight:g}')
 
-    combined = f"{title} {description}"
     for entry in keyword_config.get("exclude_keywords", []):
         keyword = str(entry.get("keyword", ""))
         penalty = float(entry.get("penalty", 0))
         if _contains(combined, keyword):
             score -= penalty
             penalties.append(f'"{keyword}" -{penalty:g}')
+
+    if EXPORT_CONTROL_PHRASE and EXPORT_CONTROL_PHRASE in combined:
+        score -= 1000
+        penalties.append(
+            '"Must be a U.S. Person due to required access to U.S. export controlled information or facilities" -1000'
+        )
 
     final_score = max(0, min(100, round(score)))
     if additions:

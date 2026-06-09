@@ -9,6 +9,7 @@ from storage.db import Database
 
 
 PUBLIC_JOB_FIELDS = (
+    "job_hash",
     "title",
     "company",
     "location",

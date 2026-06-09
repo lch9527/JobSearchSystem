@@ -64,6 +64,10 @@ select:focus, .search-box:focus-within { border-color: var(--green); box-shadow:
 .results-heading .eyebrow { margin-bottom: 8px; }
 h2 { margin: 0; font: 600 34px/1.1 "Segoe UI", Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: -.035em; }
 #clear-filters { color: var(--green); background: transparent; border: 0; font-weight: 700; cursor: pointer; }
+.job-sections { display: grid; gap: 28px; }
+.job-section { padding: 22px; background: rgba(255,255,255,.45); border: 1px solid var(--line); border-radius: 24px; }
+.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
+.section-count { min-width: 42px; padding: 7px 12px; color: var(--green); background: rgba(31,104,78,.08); border-radius: 999px; font-size: 14px; font-weight: 700; text-align: center; }
 .job-list { display: grid; gap: 12px; }
 .job-card { display: grid; grid-template-columns: 78px minmax(0, 1fr) auto; gap: 22px; align-items: center; padding: 22px; background: var(--card); border: 1px solid rgba(255,255,255,.86); border-radius: 20px; box-shadow: 0 7px 30px rgba(39,52,44,.045); transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
 .job-card:hover { transform: translateY(-2px); border-color: rgba(31,104,78,.25); box-shadow: var(--shadow); }
@@ -73,10 +77,11 @@ h2 { margin: 0; font: 600 34px/1.1 "Segoe UI", Inter, ui-sans-serif, system-ui, 
 .job-meta { display: flex; flex-wrap: wrap; gap: 7px 16px; color: var(--muted); font-size: 14px; }
 .job-reason { margin: 12px 0 0; color: #52635b; font-size: 13px; line-height: 1.45; }
 .tag { display: inline-flex; align-items: center; padding: 5px 9px; color: var(--green); background: rgba(31,104,78,.08); border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
-.apply { display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px; color: white; background: var(--ink); border-radius: 12px; text-decoration: none; font-weight: 700; white-space: nowrap; }
-.apply:hover { background: var(--green); }
-.empty-state { padding: 70px 20px; text-align: center; color: var(--muted); }
-.empty-state strong { color: var(--ink); font: 600 24px "Segoe UI", Inter, ui-sans-serif, system-ui, sans-serif; }
+.job-actions { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+.apply, .action-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; color: white; background: var(--ink); border: 0; border-radius: 12px; text-decoration: none; font-weight: 700; white-space: nowrap; cursor: pointer; }
+.apply:hover, .action-button:hover { background: var(--green); }
+.action-button.secondary { color: var(--ink); background: rgba(19,35,29,.08); }
+.action-button.secondary:hover { background: rgba(31,104,78,.14); }
 .footer { display: flex; justify-content: space-between; gap: 30px; padding: 28px 0 42px; color: var(--muted); border-top: 1px solid var(--line); font-size: 13px; }
 .footer p { margin: 0; }
 
@@ -86,7 +91,7 @@ h2 { margin: 0; font: 600 34px/1.1 "Segoe UI", Inter, ui-sans-serif, system-ui, 
   .summary-grid { grid-template-columns: repeat(2, 1fr); }
   .filter-row { grid-template-columns: repeat(2, 1fr); }
   .job-card { grid-template-columns: 64px minmax(0, 1fr); }
-  .apply { grid-column: 2; justify-self: start; }
+  .job-actions { grid-column: 2; align-items: start; }
 }
 @media (max-width: 560px) {
   .wrap { width: min(100% - 24px, 1180px); }
@@ -99,8 +104,10 @@ h2 { margin: 0; font: 600 34px/1.1 "Segoe UI", Inter, ui-sans-serif, system-ui, 
   .controls { padding: 14px; }
   .job-card { grid-template-columns: 1fr; gap: 14px; padding: 18px; }
   .score { width: 52px; height: 52px; }
-  .apply { grid-column: 1; width: 100%; justify-content: center; }
+  .job-actions { grid-column: 1; width: 100%; }
+  .apply, .action-button { width: 100%; }
   .job-reason { display: none; }
   .results-heading { align-items: start; }
+  .section-heading { align-items: start; }
   .footer { flex-direction: column; }
 }

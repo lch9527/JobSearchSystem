@@ -55,11 +55,40 @@
       <button id="clear-filters" type="button">Reset filters</button>
     </section>
 
-    <section id="job-list" class="job-list" aria-live="polite"></section>
-    <div id="empty-state" class="empty-state" hidden>
-      <strong>No jobs match these filters.</strong>
-      <p>Try a lower score or a broader search.</p>
-    </div>
+    <section class="job-sections" aria-label="Job lists">
+      <article class="job-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Review queue</p>
+            <h2>Jobs to review</h2>
+          </div>
+          <span id="review-count" class="section-count">0</span>
+        </div>
+        <section id="job-list" class="job-list" aria-live="polite"></section>
+      </article>
+
+      <article class="job-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Applied</p>
+            <h2>Applyed</h2>
+          </div>
+          <span id="applyed-count" class="section-count">0</span>
+        </div>
+        <section id="applyed-list" class="job-list" aria-live="polite"></section>
+      </article>
+
+      <article class="job-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Not fit</p>
+            <h2>Not fit</h2>
+          </div>
+          <span id="not-fit-count" class="section-count">0</span>
+        </div>
+        <section id="not-fit-list" class="job-list" aria-live="polite"></section>
+      </article>
+    </section>
   </main>
 
   <footer class="wrap footer">

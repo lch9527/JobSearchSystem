@@ -37,7 +37,7 @@ class WebWriterTests(unittest.TestCase):
             self.assertEqual(exported["title"], "Rendering Engineer")
             self.assertEqual(exported["status"], "Interested")
             self.assertNotIn("notes", exported)
-            self.assertNotIn("job_hash", exported)
+            self.assertIn("job_hash", exported)
             self.assertNotIn("description", exported)
             self.assertNotIn("raw_data", exported)
             database.close()

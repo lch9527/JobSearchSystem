@@ -30,3 +30,15 @@ class ScorerTests(unittest.TestCase):
     def test_exclusion_penalty_clamps_at_zero(self):
         score, _ = score_job(Job(title="Sales Manager"), self.config)
         self.assertEqual(score, 0)
+
+    def test_export_control_phrase_penalizes_job(self):
+        job = Job(
+            title="Security Engineer",
+            description=(
+                "Must be a U.S. Person due to required access to U.S. export controlled "
+                "information or facilities."
+            ),
+        )
+        score, reason = score_job(job, self.config)
+        self.assertEqual(score, 0)
+        self.assertIn("export controlled information or facilities", reason)
