@@ -6,6 +6,6 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 WorkingDirectory=%h/Desktop/JobSearch
-ExecStart=%h/Desktop/JobSearch/.venv/bin/python %h/Desktop/JobSearch/main.py
+ExecStart=%h/Desktop/JobSearch/scripts/run_and_publish.sh
 StandardOutput=append:%h/Desktop/JobSearch/logs/systemd.log
 StandardError=append:%h/Desktop/JobSearch/logs/systemd_error.log

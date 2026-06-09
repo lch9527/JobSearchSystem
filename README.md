@@ -137,3 +137,26 @@ git add docs/jobs.json
 git commit -m "Update job results"
 git push
 ```
+
+## Automatic Website Publishing
+
+The systemd service uses `scripts/run_and_publish.sh`. After each scheduled search it:
+
+1. refreshes SQLite, Excel, and `docs/jobs.json`;
+2. commits only `docs/jobs.json` when it changed;
+3. pushes `main` to GitHub;
+4. lets the Pages workflow redeploy the website.
+
+The publisher uses non-interactive Git authentication and a 60-second network timeout. It refuses to publish when unrelated tracked files have local changes, preventing scheduled runs from committing active development work.
+
+Run the complete search-and-publish flow manually with:
+
+```bash
+scripts/run_and_publish.sh
+```
+
+Run only the publish step with:
+
+```bash
+scripts/publish_website.sh
+```
