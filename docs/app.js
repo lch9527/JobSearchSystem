@@ -4,6 +4,15 @@ const $ = (id) => document.getElementById(id);
 
 const safeText = (value) => String(value ?? "");
 const normalized = (value) => safeText(value).toLocaleLowerCase();
+const US_LOCATION_PATTERNS = [
+  /\bunited states\b/i,
+  /\busa\b/i,
+  /\bu\.s\.\b/i,
+  /\bus\b/i,
+  /\bremote[-\s]*(?:us|u\.s\.|united states)\b/i,
+  /\b(alabama|alaska|arizona|arkansas|california|colorado|connecticut|delaware|florida|georgia|hawaii|idaho|illinois|indiana|iowa|kansas|kentucky|louisiana|maine|maryland|massachusetts|michigan|minnesota|mississippi|missouri|montana|nebraska|nevada|new hampshire|new jersey|new mexico|new york|north carolina|north dakota|ohio|oklahoma|oregon|pennsylvania|rhode island|south carolina|south dakota|tennessee|texas|utah|vermont|virginia|washington|west virginia|wisconsin|wyoming)\b/i,
+  /\b(AK|AL|AR|AZ|CA|CO|CT|DC|DE|FL|GA|HI|IA|ID|IL|IN|KS|KY|LA|MA|MD|ME|MI|MN|MO|MS|MT|NC|ND|NE|NH|NJ|NM|NV|NY|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VA|VT|WA|WI|WV|WY)\b/,
+];
 const formatDate = (value) => {
   if (!value) return "Unknown date";
   const date = new Date(value);
@@ -70,6 +79,11 @@ function populateSelect(id, values) {
     option.textContent = value;
     select.append(option);
   });
+}
+
+function isUSLocation(location) {
+  const text = normalized(location);
+  return US_LOCATION_PATTERNS.some((pattern) => pattern.test(text));
 }
 
 function setSummary(payload) {
@@ -163,10 +177,17 @@ function applyFilters() {
   const status = $("status-filter").value;
   const minimumScore = Number($("score-filter").value);
   const sort = $("sort").value;
+  const location = $("location-filter").value;
 
   const filtered = state.jobs.filter((job) => {
     const haystack = normalized([job.title, job.company, job.location, job.match_reason, job.employment_type].join(" "));
-    return (!query || haystack.includes(query)) && (!company || job.company === company) && (!status || job.status === status) && job.match_score >= minimumScore;
+    return (
+      (!query || haystack.includes(query)) &&
+      (!company || job.company === company) &&
+      (!status || job.status === status) &&
+      (!location || (location === "us" && isUSLocation(job.location))) &&
+      job.match_score >= minimumScore
+    );
   });
 
   filtered.sort((a, b) => {
@@ -215,6 +236,7 @@ function resetFilters() {
   $("status-filter").value = "";
   $("score-filter").value = "35";
   $("sort").value = "score";
+  $("location-filter").value = "";
   applyFilters();
 }
 
@@ -251,7 +273,7 @@ document.addEventListener("click", (event) => {
   moveJob(button.dataset.jobKey, button.dataset.action);
 });
 
-["search", "company-filter", "status-filter", "score-filter", "sort"].forEach((id) => {
+["search", "company-filter", "status-filter", "score-filter", "sort", "location-filter"].forEach((id) => {
   $(id).addEventListener(id === "search" ? "input" : "change", applyFilters);
 });
 $("clear-filters").addEventListener("click", resetFilters);

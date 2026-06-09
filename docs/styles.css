@@ -55,7 +55,7 @@ h1 span { color: var(--green); }
 .search-box { display: flex; align-items: center; gap: 12px; padding: 0 16px; background: white; border: 1px solid var(--line); border-radius: 14px; }
 .search-box span { color: var(--muted); font-size: 23px; }
 .search-box input { width: 100%; padding: 16px 0; color: var(--ink); background: transparent; border: 0; outline: 0; }
-.filter-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+.filter-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
 .filter-row label > span { display: block; margin: 0 0 7px 3px; color: var(--muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
 select { width: 100%; padding: 12px 13px; color: var(--ink); background: white; border: 1px solid var(--line); border-radius: 12px; outline: 0; cursor: pointer; }
 select:focus, .search-box:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px rgba(31,104,78,.1); }
