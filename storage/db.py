@@ -232,6 +232,18 @@ class Database:
         )
         self.connection.commit()
 
+    def delete_jobs_containing(self, text: str) -> int:
+        pattern = f"%{text}%"
+        cursor = self.connection.execute(
+            """
+            DELETE FROM jobs
+            WHERE title LIKE ? OR description LIKE ? OR match_reason LIKE ?
+            """,
+            (pattern, pattern, pattern),
+        )
+        self.connection.commit()
+        return cursor.rowcount
+
     def list_run_logs(self, limit: int = 200) -> list[dict[str, Any]]:
         rows = self.connection.execute(
             "SELECT * FROM run_logs ORDER BY id DESC LIMIT ?", (limit,)

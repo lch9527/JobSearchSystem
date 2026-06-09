@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 from collectors import create_collector
 from collectors.base import Job
-from matching.scorer import score_job
+from matching.scorer import EXPORT_CONTROL_PHRASE, score_job
 from storage.db import Database
 from storage.excel_writer import export_excel, import_manual_fields
 from storage.web_writer import export_website
@@ -113,6 +113,9 @@ def run() -> int:
 
         stats["duration_seconds"] = round(time.monotonic() - started, 2)
         database.add_run_log(stats)
+        deleted_jobs = database.delete_jobs_containing(EXPORT_CONTROL_PHRASE)
+        if deleted_jobs:
+            logger.info("Deleted %d jobs that matched the export-control exclusion", deleted_jobs)
         output_path = export_excel(database, excel_path, sources, keywords, settings, logger)
         logger.info("Excel updated: %s", output_path)
         website_settings = settings.get("website", {})

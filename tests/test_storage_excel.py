@@ -78,3 +78,15 @@ class StorageExcelTests(unittest.TestCase):
         workbook = load_workbook(self.excel, read_only=True)
         self.assertEqual(workbook["Jobs"].max_row, 1)
         workbook.close()
+
+    def test_delete_jobs_containing_phrase_removes_matching_rows(self):
+        job = self._job()
+        job.description = (
+            "Must be a U.S. Person due to required access to U.S. export controlled information or facilities"
+        )
+        self.database.upsert_job(job)
+        removed = self.database.delete_jobs_containing(
+            "Must be a U.S. Person due to required access to U.S. export controlled information or facilities"
+        )
+        self.assertEqual(removed, 1)
+        self.assertEqual(self.database.list_jobs(0), [])
