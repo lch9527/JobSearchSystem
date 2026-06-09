@@ -1,0 +1,112 @@
+sources:
+  - name: Skydance
+    company: Skydance
+    type: lever
+    company_slug: skydance
+    enabled: true
+    notes: Public Lever board for game and rendering roles.
+
+  - name: Gecko Robotics
+    company: Gecko Robotics
+    type: ashby
+    board_token: gecko-robotics
+    enabled: true
+    notes: Robotics, 3D visualization, and simulation roles.
+
+  - name: NODA AI
+    company: NODA AI
+    type: ashby
+    board_token: noda-ai
+    enabled: true
+    notes: Unreal Engine and mission simulation roles.
+
+  - name: UnitX
+    company: UnitX
+    type: ashby
+    board_token: unitxlabs
+    enabled: true
+    notes: Robotics and simulation engineering roles.
+
+  - name: Dandy
+    company: Dandy
+    type: ashby
+    board_token: dandy
+    enabled: true
+    notes: CAD, C++, and 3D graphics roles.
+
+  - name: Atomic Semi
+    company: Atomic Semi
+    type: ashby
+    board_token: AtomicSemi
+    enabled: true
+    notes: Rendering, Vulkan, OpenGL, and visualization roles.
+
+  - name: Higharc
+    company: Higharc
+    type: ashby
+    board_token: higharc
+    enabled: true
+    notes: CAD and interactive 3D engineering roles.
+
+  - name: FS Studio
+    company: FS Studio
+    type: ashby
+    board_token: fs-studio
+    enabled: true
+    notes: Unreal, simulation, digital twin, and 3D roles.
+
+  - name: Bifrost AI
+    company: Bifrost AI
+    type: ashby
+    board_token: Bifrost
+    enabled: true
+    notes: Simulation, rendering, game engine, and synthetic data roles.
+
+  - name: SPAICE
+    company: SPAICE
+    type: ashby
+    board_token: spaice-tech
+    enabled: true
+    notes: Virtual worlds, C++, graphics, and simulation roles.
+
+  - name: Voodoo
+    company: Voodoo
+    type: ashby
+    board_token: voodoo
+    enabled: true
+    notes: Game development and Unreal roles.
+
+  - name: Redly Games
+    company: Redly Games
+    type: ashby
+    board_token: redlygames
+    enabled: true
+    notes: Unreal Engine game development roles.
+
+  - name: Stand Insurance
+    company: Stand Insurance
+    type: ashby
+    board_token: StandInsurance
+    enabled: true
+    notes: Simulation, digital twin, and 3D visualization roles.
+
+  - name: Stratum AI
+    company: Stratum AI
+    type: ashby
+    board_token: stratum-ai
+    enabled: true
+    notes: 3D graphics, shaders, and visualization roles.
+
+  - name: Anduril Industries
+    company: Anduril Industries
+    type: greenhouse
+    board_token: andurilindustries
+    enabled: true
+    notes: C++, simulation, autonomy, and graphics roles.
+
+  - name: Shield AI
+    company: Shield AI
+    type: greenhouse
+    board_token: shieldai
+    enabled: false
+    notes: C++, simulation, autonomy, and robotics roles.

@@ -1,0 +1,39 @@
+database:
+  path: data/jobs.sqlite
+
+excel:
+  path: data/job_radar.xlsx
+  minimum_export_score: 35
+  preserve_user_status: true
+  preserve_user_notes: true
+  backup_count: 20
+
+website:
+  output_dir: docs
+  minimum_export_score: 35
+
+logging:
+  path: logs/job_radar.log
+  level: INFO
+
+matching:
+  minimum_match_score: 35
+
+requests:
+  timeout_seconds: 20
+  user_agent: LocalJobRadar/1.0 personal job search bot
+  max_total_requests_per_run: 300
+  max_concurrent_requests: 2
+
+rate_limit:
+  default_delay_min_seconds: 20
+  default_delay_max_seconds: 60
+  api_delay_min_seconds: 3
+  api_delay_max_seconds: 10
+  max_requests_per_domain_per_run: 10
+  max_requests_per_api_source_per_run: 50
+  backoff_seconds: [60, 120, 300, 600]
+
+scheduler:
+  run_times: ["09:00", "12:00", "16:00", "20:00"]
+

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A curated radar for graphics, C++, Unreal Engine, XR, and simulation jobs.">
+  <title>Local Job Radar</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <header class="hero">
+    <nav class="nav wrap">
+      <a class="brand" href="#"><span class="brand-mark">JR</span><span>Job Radar</span></a>
+      <a class="github-link" href="https://github.com/lch9527/JobSearchSystem">View source <span aria-hidden="true">↗</span></a>
+    </nav>
+    <div class="hero-content wrap">
+      <div>
+        <p class="eyebrow"><span class="live-dot"></span> Local search, public results</p>
+        <h1>Find the work that<br><span>matches your engine.</span></h1>
+        <p class="hero-copy">Focused software roles in graphics, rendering, C++, Unreal Engine, XR, simulation, and real-time 3D.</p>
+      </div>
+      <div class="hero-stat">
+        <span id="hero-count">--</span>
+        <p>matched opportunities</p>
+        <small id="updated-time">Loading latest radar...</small>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap main-content">
+    <section class="summary-grid" aria-label="Job summary">
+      <article class="summary-card"><span>Strong matches</span><strong id="strong-count">--</strong><small>Score 70+</small></article>
+      <article class="summary-card"><span>Companies</span><strong id="company-count">--</strong><small>Across public boards</small></article>
+      <article class="summary-card"><span>Remote roles</span><strong id="remote-count">--</strong><small>Remote or distributed</small></article>
+      <article class="summary-card accent-card"><span>Highest score</span><strong id="top-score">--</strong><small>Out of 100</small></article>
+    </section>
+
+    <section class="controls" aria-label="Job filters">
+      <label class="search-box">
+        <span aria-hidden="true">⌕</span>
+        <input id="search" type="search" placeholder="Search title, company, location, or skill..." autocomplete="off">
+      </label>
+      <div class="filter-row">
+        <label><span>Company</span><select id="company-filter"><option value="">All companies</option></select></label>
+        <label><span>Status</span><select id="status-filter"><option value="">All statuses</option></select></label>
+        <label><span>Minimum score</span><select id="score-filter"><option value="35">35+</option><option value="50">50+</option><option value="70">70+</option><option value="90">90+</option></select></label>
+        <label><span>Sort by</span><select id="sort"><option value="score">Best match</option><option value="newest">Newest found</option><option value="company">Company A-Z</option><option value="title">Title A-Z</option></select></label>
+      </div>
+    </section>
+
+    <section class="results-heading">
+      <div><p class="eyebrow">Opportunity feed</p><h2 id="result-count">Loading jobs...</h2></div>
+      <button id="clear-filters" type="button">Reset filters</button>
+    </section>
+
+    <section id="job-list" class="job-list" aria-live="polite"></section>
+    <div id="empty-state" class="empty-state" hidden>
+      <strong>No jobs match these filters.</strong>
+      <p>Try a lower score or a broader search.</p>
+    </div>
+  </main>
+
+  <footer class="wrap footer">
+    <p>Generated from public job boards. Verify details on the employer's posting before applying.</p>
+    <p>Local Job Radar</p>
+  </footer>
+  <script src="app.js" defer></script>
+</body>
+</html>

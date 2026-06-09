@@ -1,0 +1,44 @@
+include_keywords:
+  - {keyword: "C++", weight: 10}
+  - {keyword: "Unreal Engine", weight: 15}
+  - {keyword: "Unreal Engine 5", weight: 18}
+  - {keyword: "Vulkan", weight: 15}
+  - {keyword: "OpenGL", weight: 10}
+  - {keyword: "OpenXR", weight: 15}
+  - {keyword: "VR", weight: 15}
+  - {keyword: "XR", weight: 15}
+  - {keyword: "Rendering", weight: 20}
+  - {keyword: "Graphics", weight: 20}
+  - {keyword: "Simulation", weight: 15}
+  - {keyword: "Shader", weight: 10}
+  - {keyword: "Real-time 3D", weight: 15}
+  - {keyword: "Digital Twin", weight: 12}
+  - {keyword: "Game Development", weight: 10}
+  - {keyword: "Graphics Optimization", weight: 15}
+
+title_boost_keywords:
+  - {keyword: "Graphics Engineer", weight: 30}
+  - {keyword: "Rendering Engineer", weight: 30}
+  - {keyword: "Software Engineer, Graphics", weight: 30}
+  - {keyword: "Unreal Engine Developer", weight: 25}
+  - {keyword: "Unreal Engine Programmer", weight: 25}
+  - {keyword: "VR Developer", weight: 25}
+  - {keyword: "XR Developer", weight: 25}
+  - {keyword: "OpenXR Developer", weight: 25}
+  - {keyword: "Vulkan Engineer", weight: 25}
+  - {keyword: "OpenGL Engineer", weight: 20}
+  - {keyword: "Simulation Engineer", weight: 25}
+  - {keyword: "Real-time 3D Engineer", weight: 25}
+  - {keyword: "Engine Programmer", weight: 25}
+  - {keyword: "Gameplay Engineer", weight: 15}
+  - {keyword: "Tools Programmer", weight: 15}
+  - {keyword: "C++ Software Engineer", weight: 20}
+
+exclude_keywords:
+  - {keyword: "Sales", penalty: 50}
+  - {keyword: "Recruiter", penalty: 50}
+  - {keyword: "Account Executive", penalty: 50}
+  - {keyword: "Frontend only", penalty: 30}
+  - {keyword: "PHP", penalty: 20}
+  - {keyword: "WordPress", penalty: 30}
+
