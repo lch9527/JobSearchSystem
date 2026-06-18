@@ -90,3 +90,10 @@ class StorageExcelTests(unittest.TestCase):
         )
         self.assertEqual(removed, 1)
         self.assertEqual(self.database.list_jobs(0), [])
+
+    def test_delete_jobs_by_hashes_removes_matching_rows(self):
+        job = self._job()
+        self.database.upsert_job(job)
+        removed = self.database.delete_jobs_by_hashes([job.job_hash])
+        self.assertEqual(removed, 1)
+        self.assertEqual(self.database.list_jobs(0), [])

@@ -244,6 +244,22 @@ class Database:
         self.connection.commit()
         return cursor.rowcount
 
+    def delete_jobs_by_hashes(self, job_hashes: list[str]) -> int:
+        hashes = [job_hash for job_hash in job_hashes if job_hash]
+        if not hashes:
+            return 0
+        deleted = 0
+        for index in range(0, len(hashes), 500):
+            chunk = hashes[index:index + 500]
+            placeholders = ", ".join("?" for _ in chunk)
+            cursor = self.connection.execute(
+                f"DELETE FROM jobs WHERE job_hash IN ({placeholders})",
+                chunk,
+            )
+            deleted += cursor.rowcount
+        self.connection.commit()
+        return deleted
+
     def list_run_logs(self, limit: int = 200) -> list[dict[str, Any]]:
         rows = self.connection.execute(
             "SELECT * FROM run_logs ORDER BY id DESC LIMIT ?", (limit,)

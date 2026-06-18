@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 from collectors import create_collector
 from collectors.base import Job
+from matching.eligibility import CLEARANCE_EXCLUSION_PHRASE, is_eligible_job
 from matching.scorer import EXPORT_CONTROL_PHRASE, score_job
 from storage.db import Database
 from storage.excel_writer import export_excel, import_manual_fields
@@ -93,6 +94,14 @@ def run() -> int:
                 stats["jobs_found"] += len(jobs)
                 for job in jobs:
                     normalized = normalize_job(job)
+                    if not is_eligible_job(normalized):
+                        logger.info(
+                            "Skipped ineligible job: %s - %s (%s)",
+                            normalized.title,
+                            normalized.company,
+                            normalized.location,
+                        )
+                        continue
                     normalized.match_score, normalized.match_reason = score_job(
                         normalized, keywords
                     )
@@ -116,6 +125,29 @@ def run() -> int:
         deleted_jobs = database.delete_jobs_containing(EXPORT_CONTROL_PHRASE)
         if deleted_jobs:
             logger.info("Deleted %d jobs that matched the export-control exclusion", deleted_jobs)
+        deleted_clearance_jobs = database.delete_jobs_containing(CLEARANCE_EXCLUSION_PHRASE)
+        if deleted_clearance_jobs:
+            logger.info(
+                "Deleted %d jobs that matched the security-clearance exclusion",
+                deleted_clearance_jobs,
+            )
+        ineligible_hashes = []
+        for row in database.list_jobs(0):
+            existing_job = Job(
+                title=row.get("title", ""),
+                company=row.get("company", ""),
+                location=row.get("location", ""),
+                description=row.get("description", ""),
+                employment_type=row.get("employment_type", ""),
+            )
+            if not is_eligible_job(existing_job):
+                ineligible_hashes.append(row.get("job_hash", ""))
+        deleted_ineligible_jobs = database.delete_jobs_by_hashes(ineligible_hashes)
+        if deleted_ineligible_jobs:
+            logger.info(
+                "Deleted %d previously stored jobs that no longer match eligibility filters",
+                deleted_ineligible_jobs,
+            )
         output_path = export_excel(database, excel_path, sources, keywords, settings, logger)
         logger.info("Excel updated: %s", output_path)
         website_settings = settings.get("website", {})

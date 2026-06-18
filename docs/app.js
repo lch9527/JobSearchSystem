@@ -55,6 +55,12 @@ function legacyJobKey(job) {
 
 function migrateActions(actions, jobs) {
   let changed = false;
+  for (const [key, action] of Object.entries(actions)) {
+    if (action === "applyed") {
+      actions[key] = "applied";
+      changed = true;
+    }
+  }
   for (const job of jobs) {
     const primaryKey = safeText(job.job_hash);
     const fallbackKey = legacyJobKey(job);
@@ -98,7 +104,7 @@ function setSummary(payload) {
 
 function setBucketCounts() {
   $("review-count").textContent = state.filtered.review.length;
-  $("applyed-count").textContent = state.filtered.applyed.length;
+  $("applied-count").textContent = state.filtered.applied.length;
   $("not-fit-count").textContent = state.filtered.notFit.length;
 }
 
@@ -110,6 +116,13 @@ function createButton(label, action, jobKeyValue, className = "action-button") {
   button.dataset.jobKey = jobKeyValue;
   button.textContent = label;
   return button;
+}
+
+function createEmptyState(message) {
+  const empty = document.createElement("div");
+  empty.className = "empty-state";
+  empty.textContent = message;
+  return empty;
 }
 
 function createJobCard(job, bucket) {
@@ -150,8 +163,12 @@ function createJobCard(job, bucket) {
 
   const link = document.createElement("a");
   link.className = "apply";
-  const target = new URL(job.url, window.location.href);
-  link.href = ["http:", "https:"].includes(target.protocol) ? target.href : "#";
+  try {
+    const target = new URL(job.url, window.location.href);
+    link.href = ["http:", "https:"].includes(target.protocol) ? target.href : "#";
+  } catch {
+    link.href = "#";
+  }
   link.target = "_blank";
   link.rel = "noopener noreferrer";
   link.textContent = "View job";
@@ -160,7 +177,7 @@ function createJobCard(job, bucket) {
   const key = jobKey(job);
   if (bucket === "review") {
     actions.append(
-      createButton("applyed", "applyed", key),
+      createButton("Applied", "applied", key),
       createButton("not fit", "not-fit", key, "action-button secondary")
     );
   } else {
@@ -202,12 +219,12 @@ function applyFilters() {
 }
 
 function partitionFilteredJobs(filteredJobs) {
-  const buckets = { review: [], applyed: [], notFit: [] };
+  const buckets = { review: [], applied: [], notFit: [] };
   for (const job of filteredJobs) {
     const key = jobKey(job);
     const action = state.actions[key];
-    if (action === "applyed") {
-      buckets.applyed.push(job);
+    if (action === "applied" || action === "applyed") {
+      buckets.applied.push(job);
     } else if (action === "not-fit") {
       buckets.notFit.push(job);
     } else {
@@ -219,14 +236,17 @@ function partitionFilteredJobs(filteredJobs) {
 
 function renderSection(containerId, jobs, bucket) {
   const container = $(containerId);
-  container.replaceChildren(...jobs.map((job) => createJobCard(job, bucket)));
+  container.replaceChildren(...(jobs.length ? jobs.map((job) => createJobCard(job, bucket)) : [createEmptyState("No jobs in this bucket yet.")]));
 }
 
 function render() {
   renderSection("job-list", state.filtered.review, "review");
-  renderSection("applyed-list", state.filtered.applyed, "applyed");
+  renderSection("applied-list", state.filtered.applied, "applied");
   renderSection("not-fit-list", state.filtered.notFit, "not-fit");
-  $("result-count").textContent = `${state.filtered.review.length} ${state.filtered.review.length === 1 ? "role" : "roles"} in review`;
+  const totalFiltered = state.filtered.review.length + state.filtered.applied.length + state.filtered.notFit.length;
+  $("result-count").textContent = totalFiltered
+    ? `${totalFiltered} ${totalFiltered === 1 ? "role" : "roles"} match these filters`
+    : "No roles match these filters";
   setBucketCounts();
 }
 

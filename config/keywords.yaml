@@ -35,6 +35,10 @@ title_boost_keywords:
   - {keyword: "C++ Software Engineer", weight: 20}
 
 exclude_keywords:
+  - {keyword: "Eligible to obtain and maintain an active U.S. Secret security clearance", penalty: 100}
+  - {keyword: "Intern", penalty: 100}
+  - {keyword: "Internship", penalty: 100}
+  - {keyword: "Co-op", penalty: 100}
   - {keyword: "Sales", penalty: 50}
   - {keyword: "Recruiter", penalty: 50}
   - {keyword: "Account Executive", penalty: 50}
