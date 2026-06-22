@@ -10,7 +10,7 @@ excel:
 
 website:
   output_dir: docs
-  minimum_export_score: 35
+  minimum_export_score: 20
 
 logging:
   path: logs/job_radar.log

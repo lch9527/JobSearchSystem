@@ -1,4 +1,17 @@
 include_keywords:
+  - {keyword: "Software Engineer", weight: 8}
+  - {keyword: "Software Engineering", weight: 8}
+  - {keyword: "Systems", weight: 6}
+  - {keyword: "Platform", weight: 6}
+  - {keyword: "Computer Vision", weight: 12}
+  - {keyword: "Robotics", weight: 10}
+  - {keyword: "Autonomy", weight: 10}
+  - {keyword: "AR", weight: 10}
+  - {keyword: "Mixed Reality", weight: 12}
+  - {keyword: "Game Engine", weight: 12}
+  - {keyword: "3D", weight: 10}
+  - {keyword: "Visualization", weight: 10}
+  - {keyword: "Real-time", weight: 8}
   - {keyword: "C++", weight: 10}
   - {keyword: "Unreal Engine", weight: 15}
   - {keyword: "Unreal Engine 5", weight: 18}
@@ -17,6 +30,13 @@ include_keywords:
   - {keyword: "Graphics Optimization", weight: 15}
 
 title_boost_keywords:
+  - {keyword: "Software Engineer", weight: 12}
+  - {keyword: "Software Engineering", weight: 12}
+  - {keyword: "Computer Vision Engineer", weight: 25}
+  - {keyword: "Robotics Engineer", weight: 25}
+  - {keyword: "AR Engineer", weight: 20}
+  - {keyword: "3D Engineer", weight: 20}
+  - {keyword: "Visualization Engineer", weight: 20}
   - {keyword: "Graphics Engineer", weight: 30}
   - {keyword: "Rendering Engineer", weight: 30}
   - {keyword: "Software Engineer, Graphics", weight: 30}
